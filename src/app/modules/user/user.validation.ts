@@ -18,18 +18,16 @@ const createUserValidationSchema = z.object({
         invalid_type_error: "Password must be a valid string",
       })
       .min(1, { message: "Password is required" }),
-    phone: z
+    profilePicture: z
       .string({
-        required_error: "Phone number is required",
-        invalid_type_error: "Phone number must be a valid string",
+        invalid_type_error: "Profile picture must be a valid string",
       })
-      .min(1, { message: "Phone number is required" }),
-    address: z
+      .optional(),
+    bio: z
       .string({
-        required_error: "Address is required",
-        invalid_type_error: "Address must be a valid string",
+        invalid_type_error: "Bio must be a valid string",
       })
-      .min(1, { message: "Address is required" }),
+      .optional(),
   }),
 });
 
