@@ -19,7 +19,7 @@ app.use(cookieParser());
 // Parsers
 app.use(express.json());
 
-// app.use("/api/v1", router);
+app.use("/api/v1", router);
 
 app.get("/", (req: Request, res: Response, next: NextFunction) => {
   res.send("App is listening on port 5000");
