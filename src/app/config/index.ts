@@ -6,6 +6,7 @@ export default {
   NODE_ENV: process.env.NODE_ENV,
   port: process.env.PORT,
   database_url: process.env.DATABASE_URL,
+  client_url: process.env.CLIENT_URL,
   bcrypt_salt_rounds: process.env.BCRYPT_SALT_ROUNDS,
   default_password: process.env.DEFAULT_PASSWORD,
   jwt_access_secret: process.env.JWT_ACCESS_SECRET,
@@ -13,4 +14,6 @@ export default {
   jwt_refresh_secret: process.env.JWT_REFRESH_SECRET,
   jwt_refresh_expires_in: process.env.JWT_REFRESH_EXPIRES_IN,
   stripe_secret_key: process.env.STRIPE_SECRET_KEY,
+  nodemailer_email: process.env.NODEMAILER_EMAIL,
+  nodemailer_password: process.env.NODEMAILER_PASSWORD,
 };
