@@ -5,4 +5,4 @@ export const USER_ROLE_ENUM = {
   user: "user",
 } as const;
 
-export const userSearchableFields = [];
+export const userSearchableFields = ["name", "email", "role"];
