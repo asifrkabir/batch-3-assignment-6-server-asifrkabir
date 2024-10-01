@@ -69,8 +69,12 @@ const updateUser = async (
 
   const { itemImages } = images;
 
+  // New Profile Picture
   if (itemImages && itemImages.length > 0) {
     payload.profilePicture = itemImages[0]?.path;
+  } else if (payload.profilePicture === null) {
+    // Remove Profile Picture
+    payload.profilePicture = "";
   }
 
   const result = await User.findOneAndUpdate({ _id: id }, payload, {
