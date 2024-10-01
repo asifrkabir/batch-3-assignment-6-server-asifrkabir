@@ -41,18 +41,6 @@ const userSchema = new Schema<TUser>(
         ref: "User",
       },
     ],
-    // posts: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: "Post",
-    //   },
-    // ],
-    // purchasedPosts: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: "Post",
-    //   },
-    // ],
   },
   {
     timestamps: true,

@@ -25,12 +25,6 @@ const ImageFileZodSchema = z.object({
   filename: z.string(),
 });
 
-// export const ImageFilesArrayZodSchema = z.object({
-//   files: z.record(z.string(), z.array(ImageFileZodSchema)).refine((files) => {
-//     return Object.keys(files).length > 0;
-//   }, "Image is required"),
-// });
-
 export const ImageFilesArrayZodSchema = z.object({
   files: z
     .record(z.string(), z.array(ImageFileZodSchema))

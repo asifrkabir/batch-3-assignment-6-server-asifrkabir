@@ -10,8 +10,6 @@ export type TUser = {
   bio: string;
   followers: [Types.ObjectId];
   following: [Types.ObjectId];
-  // posts: [Types.ObjectId];
-  // purchasedPosts: [Types.ObjectId];
 };
 
 export type TUserRole = keyof typeof USER_ROLE_ENUM;
