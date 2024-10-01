@@ -1,15 +1,15 @@
 import { Router } from "express";
-import validateRequest from "../../middlewares/validateRequest";
-import { AuthValidations } from "./auth.validation";
-import { AuthController } from "./auth.controller";
-import { UserValidations } from "../user/user.validation";
-import { UserController } from "../user/user.controller";
-import auth from "../../middlewares/auth";
-import { USER_ROLE_ENUM } from "../user/user.constant";
 import { multerUpload } from "../../config/multer.config";
-import validateImageFileRequest from "../../middlewares/validateImageFileRequest";
-import { ImageFilesArrayZodSchema } from "../../zod/image.validation";
+import auth from "../../middlewares/auth";
 import { parseBody } from "../../middlewares/bodyParser";
+import validateImageFileRequest from "../../middlewares/validateImageFileRequest";
+import validateRequest from "../../middlewares/validateRequest";
+import { ImageFilesArrayZodSchema } from "../../zod/image.validation";
+import { USER_ROLE_ENUM } from "../user/user.constant";
+import { UserController } from "../user/user.controller";
+import { UserValidations } from "../user/user.validation";
+import { AuthController } from "./auth.controller";
+import { AuthValidations } from "./auth.validation";
 
 const router = Router();
 

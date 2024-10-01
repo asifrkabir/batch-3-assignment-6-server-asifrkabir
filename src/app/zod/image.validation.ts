@@ -25,8 +25,23 @@ const ImageFileZodSchema = z.object({
   filename: z.string(),
 });
 
+// export const ImageFilesArrayZodSchema = z.object({
+//   files: z.record(z.string(), z.array(ImageFileZodSchema)).refine((files) => {
+//     return Object.keys(files).length > 0;
+//   }, "Image is required"),
+// });
+
 export const ImageFilesArrayZodSchema = z.object({
-  files: z.record(z.string(), z.array(ImageFileZodSchema)).refine((files) => {
-    return Object.keys(files).length > 0;
-  }, "Image is required"),
+  files: z
+    .record(z.string(), z.array(ImageFileZodSchema))
+    .optional()
+    .refine(
+      (files) =>
+        !files ||
+        Object.keys(files).length === 0 ||
+        Object.values(files).every((arr) => arr.length > 0),
+      {
+        message: "If images are uploaded, at least one image file is required",
+      }
+    ),
 });
