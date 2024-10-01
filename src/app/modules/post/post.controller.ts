@@ -18,6 +18,26 @@ const createPost = catchAsync(async (req, res) => {
   });
 });
 
+const updatePost = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.user;
+
+  const result = await PostService.updatePost(
+    id,
+    userId,
+    req.body,
+    req.files as TImageFiles
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Post updated successfully",
+    data: result,
+  });
+});
+
 export const PostController = {
   createPost,
+  updatePost,
 };

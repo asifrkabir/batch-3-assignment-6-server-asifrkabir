@@ -21,4 +21,14 @@ router.post(
   PostController.createPost
 );
 
+router.put(
+  "/:id",
+  auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),
+  multerUpload.fields([{ name: "postImages" }]),
+  validateImageFileRequest(ImageFilesArrayZodSchema),
+  parseBody,
+  validateRequest(PostValidations.updatePostValidationSchema),
+  PostController.updatePost
+);
+
 export const PostRoutes = router;

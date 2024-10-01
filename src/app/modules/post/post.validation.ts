@@ -44,6 +44,42 @@ const createPostValidationSchema = z.object({
   }),
 });
 
+const updatePostValidationSchema = z.object({
+  body: z.object({
+    title: z
+      .string({
+        invalid_type_error: "Title must be a valid string",
+      })
+      .optional(),
+    content: z
+      .string({
+        invalid_type_error: "Content must be a valid string",
+      })
+      .optional(),
+    category: z
+      .enum([...POST_CATEGORY_LIST] as [string, ...string[]], {
+        message: "Please enter a valid category",
+      })
+      .optional(),
+    isPremium: z
+      .boolean({
+        invalid_type_error: "Is Premium must be a boolean",
+      })
+      .optional(),
+    tags: z
+      .array(z.string(), {
+        invalid_type_error: "Tags must be an array of strings",
+      })
+      .optional(),
+    imageUrls: z
+      .array(z.string(), {
+        invalid_type_error: "Image URLs must be an array of strings",
+      })
+      .optional(),
+  }),
+});
+
 export const PostValidations = {
   createPostValidationSchema,
+  updatePostValidationSchema,
 };
