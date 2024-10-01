@@ -18,6 +18,24 @@ const createUser = catchAsync(async (req, res) => {
   });
 });
 
+const updateUser = catchAsync(async (req, res) => {
+  const { userId } = req.user;
+
+  const result = await UserService.updateUser(
+    userId,
+    req.body,
+    req.files as TImageFiles
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "User updated successfully",
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
+  updateUser,
 };
