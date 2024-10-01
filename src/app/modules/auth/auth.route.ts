@@ -31,7 +31,7 @@ router.post(
 router.post(
   "/change-password",
   auth(USER_ROLE_ENUM.user, USER_ROLE_ENUM.admin),
-  // validateRequest(AuthValidation.changePasswordValidationSchema),
+  validateRequest(AuthValidations.changePasswordValidationSchema),
   AuthController.changePassword
 );
 
@@ -43,13 +43,13 @@ router.post(
 
 router.post(
   "/forgot-password",
-  // validateRequest(AuthValidations.forgetPasswordValidationSchema),
+  validateRequest(AuthValidations.forgotPasswordValidationSchema),
   AuthController.forgotPassword
 );
 
 router.post(
   "/reset-password",
-  // validateRequest(AuthValidations.resetPasswordValidationSchema),
+  validateRequest(AuthValidations.resetPasswordValidationSchema),
   AuthController.resetPassword
 );
 
