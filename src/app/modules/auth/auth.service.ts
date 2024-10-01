@@ -121,6 +121,8 @@ const forgotPassword = async (userId: string) => {
 
   const resetUILink = `${config.client_url}?id=${existingUser.id}&token=${resetToken}`;
 
+  // eslint-disable-next-line no-console
+  console.log(`Sending Email to: ${existingUser?.email}`);
   sendResetPasswordEmail(existingUser?.email, resetUILink);
 };
 
