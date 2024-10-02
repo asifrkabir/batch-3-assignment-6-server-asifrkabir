@@ -41,6 +41,10 @@ const userSchema = new Schema<TUser>(
         ref: "User",
       },
     ],
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

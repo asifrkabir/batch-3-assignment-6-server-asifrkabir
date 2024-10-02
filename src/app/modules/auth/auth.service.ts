@@ -5,7 +5,11 @@ import { TLoginUser } from "./auth.interface";
 import { createToken, isPasswordValid, verifyToken } from "./auth.utils";
 import { TUser } from "../user/user.interface";
 import config from "../../config";
-import { encryptPassword, getExistingUserByEmail } from "../user/user.utils";
+import {
+  encryptPassword,
+  getExistingUserByEmail,
+  getExistingUserById,
+} from "../user/user.utils";
 import { User } from "../user/user.model";
 import { JwtPayload } from "jsonwebtoken";
 import { sendResetPasswordEmail } from "../../utils/sendEmail";
@@ -87,7 +91,7 @@ const refreshToken = async (refreshToken: string) => {
   const { userId } = decoded;
 
   // checking if the user exists
-  const existingUser = await User.findById(userId);
+  const existingUser = await getExistingUserById(userId);
 
   if (!existingUser) {
     throw new AppError(httpStatus.NOT_FOUND, "User not found");
@@ -105,7 +109,7 @@ const refreshToken = async (refreshToken: string) => {
 };
 
 const forgotPassword = async (userId: string) => {
-  const existingUser = await User.findById(userId);
+  const existingUser = await getExistingUserById(userId);
 
   if (!existingUser) {
     throw new AppError(httpStatus.NOT_FOUND, "User not found");
@@ -130,7 +134,7 @@ const resetPassword = async (
   payload: { id: string; newPassword: string },
   token: string
 ) => {
-  const existingUser = await User.findById(payload.id);
+  const existingUser = await getExistingUserById(payload.id);
 
   if (!existingUser) {
     throw new AppError(httpStatus.NOT_FOUND, "User not found");

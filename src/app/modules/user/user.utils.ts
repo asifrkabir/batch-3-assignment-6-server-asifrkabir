@@ -12,7 +12,7 @@ export const encryptPassword = async (plainTextPassword: string) => {
 };
 
 export const getExistingUserByEmail = async (email: string) => {
-  const result = await User.findOne({ email }).select([
+  const result = await User.findOne({ email, isActive: true }).select([
     "+password",
     "-__v",
     "-createdAt",
@@ -23,7 +23,9 @@ export const getExistingUserByEmail = async (email: string) => {
 };
 
 export const getExistingUserById = async (id: string) => {
-  const result = await User.findById(id).select(["+password"]);
+  const result = await User.findOne({ _id: id, isActive: true }).select([
+    "+password",
+  ]);
 
   return result;
 };

@@ -8,13 +8,15 @@ import { TImageFiles } from "../../interface/image.interface";
 import QueryBuilder from "../../builder/QueryBuilder";
 
 const getUserById = async (id: string) => {
-  const result = await User.findById(id).select("-password");
+  const result = await User.findOne({ _id: id, isActive: true }).select(
+    "-password"
+  );
 
   return result;
 };
 
 const getAllUsers = async (query: Record<string, unknown>) => {
-  const userQuery = new QueryBuilder(User.find(), query)
+  const userQuery = new QueryBuilder(User.find({ isActive: true }), query)
     .search(userSearchableFields)
     .filter()
     .sort()
@@ -86,9 +88,26 @@ const updateUser = async (
   return result;
 };
 
+const deleteUser = async (id: string) => {
+  const existingUser = await getExistingUserById(id);
+
+  if (!existingUser) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  const result = await User.findByIdAndUpdate(
+    id,
+    { isActive: false },
+    { new: true }
+  );
+
+  return result;
+};
+
 export const UserService = {
   getUserById,
   getAllUsers,
   createUser,
   updateUser,
+  deleteUser,
 };
