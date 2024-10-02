@@ -11,4 +11,10 @@ router.post(
   PaymentController.createPaymentIntent
 );
 
+router.post(
+  "/",
+  auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),
+  PaymentController.createPayment
+);
+
 export const PaymentRoutes = router;

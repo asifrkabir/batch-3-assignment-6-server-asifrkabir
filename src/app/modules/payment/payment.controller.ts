@@ -19,6 +19,20 @@ const createPaymentIntent = catchAsync(async (req, res) => {
   });
 });
 
+const createPayment = catchAsync(async (req, res) => {
+  const { userId } = req.user;
+
+  const result = await PaymentService.createPayment(userId, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.CREATED,
+    success: true,
+    message: "Payment created successfully",
+    data: result,
+  });
+});
+
 export const PaymentController = {
   createPaymentIntent,
+  createPayment,
 };
