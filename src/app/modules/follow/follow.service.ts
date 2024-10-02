@@ -4,6 +4,7 @@ import { getExistingUserById } from "../user/user.utils";
 import { Follow } from "./follow.model";
 import { TFollow } from "./follow.interface";
 import QueryBuilder from "../../builder/QueryBuilder";
+import { ClientSession } from "mongoose";
 
 const getAllFollows = async (query: Record<string, unknown>) => {
   const userQuery = new QueryBuilder(Follow.find(), query)
@@ -97,8 +98,23 @@ const unfollow = async (followerId: string, toBeUnfollowedUserId: string) => {
   return result;
 };
 
+const deleteAllFollowsByUserId = async (
+  userId: string,
+  session?: ClientSession
+) => {
+  const result = await Follow.deleteMany(
+    {
+      $or: [{ follower: userId }, { following: userId }],
+    },
+    { session: session || undefined }
+  );
+
+  return result.deletedCount;
+};
+
 export const FollowService = {
   getAllFollows,
   follow,
   unfollow,
+  deleteAllFollowsByUserId,
 };

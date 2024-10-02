@@ -6,6 +6,8 @@ import { encryptPassword, getExistingUserById } from "./user.utils";
 import { USER_ROLE_ENUM, userSearchableFields } from "./user.constant";
 import { TImageFiles } from "../../interface/image.interface";
 import QueryBuilder from "../../builder/QueryBuilder";
+import mongoose from "mongoose";
+import { FollowService } from "../follow/follow.service";
 
 const getUserById = async (id: string) => {
   const result = await User.findOne({ _id: id, isActive: true }).select(
@@ -95,13 +97,29 @@ const deleteUser = async (id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, "User not found");
   }
 
-  const result = await User.findByIdAndUpdate(
-    id,
-    { isActive: false },
-    { new: true }
-  );
+  const session = await mongoose.startSession();
 
-  return result;
+  try {
+    session.startTransaction();
+
+    const deletedUser = await User.findByIdAndUpdate(
+      id,
+      { isActive: false },
+      { new: true, session }
+    );
+
+    await FollowService.deleteAllFollowsByUserId(id, session);
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return deletedUser;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+
+    throw error;
+  }
 };
 
 export const UserService = {
