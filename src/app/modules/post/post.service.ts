@@ -31,7 +31,19 @@ const getAllPosts = async (query: Record<string, unknown>) => {
   };
 };
 
-const createPost = async (payload: TPost, images: TImageFiles) => {
+const createPost = async (
+  authorId: string,
+  payload: TPost,
+  images: TImageFiles
+) => {
+  const existingAuthor = await getExistingUserById(authorId);
+
+  if (!existingAuthor) {
+    throw new AppError(httpStatus.NOT_FOUND, "Author not found");
+  }
+
+  payload.author = existingAuthor._id;
+
   const { postImages } = images;
 
   if (postImages && postImages.length > 0) {

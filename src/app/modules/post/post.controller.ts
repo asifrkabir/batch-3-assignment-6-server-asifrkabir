@@ -49,7 +49,10 @@ const getAllPosts = catchAsync(async (req, res) => {
 });
 
 const createPost = catchAsync(async (req, res) => {
+  const { userId } = req.user;
+
   const result = await PostService.createPost(
+    userId,
     req.body,
     req.files as TImageFiles
   );

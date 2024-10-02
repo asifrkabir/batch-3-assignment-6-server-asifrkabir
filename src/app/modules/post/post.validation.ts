@@ -15,12 +15,6 @@ const createPostValidationSchema = z.object({
         invalid_type_error: "Content must be a valid string",
       })
       .min(1, { message: "Content is required" }),
-    author: z
-      .string({
-        required_error: "Author is required",
-        invalid_type_error: "Author must be a valid string",
-      })
-      .min(1, { message: "Author is required" }),
     category: z.enum([...POST_CATEGORY_LIST] as [string, ...string[]], {
       message: "Please enter a valid category",
       required_error: "Category is required",
