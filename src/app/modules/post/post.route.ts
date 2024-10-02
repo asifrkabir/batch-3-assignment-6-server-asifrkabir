@@ -49,4 +49,11 @@ router.delete(
   PostController.deletePost
 );
 
+router.patch(
+  "/:id/publish",
+  auth(USER_ROLE_ENUM.admin),
+  validateRequest(PostValidations.togglePostPublishValidationSchema),
+  PostController.togglePostPublish
+);
+
 export const PostRoutes = router;

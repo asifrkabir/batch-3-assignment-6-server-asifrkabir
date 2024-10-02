@@ -94,10 +94,24 @@ const deletePost = catchAsync(async (req, res) => {
   });
 });
 
+const togglePostPublish = catchAsync(async (req, res) => {
+  const { id } = req.params;
+
+  const result = await PostService.togglePostPublish(id, req.body);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Post publish status updated successfully",
+    data: result,
+  });
+});
+
 export const PostController = {
   getPostById,
   getAllPosts,
   createPost,
   updatePost,
   deletePost,
+  togglePostPublish,
 };

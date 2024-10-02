@@ -79,7 +79,18 @@ const updatePostValidationSchema = z.object({
   }),
 });
 
+const togglePostPublishValidationSchema = z.object({
+  body: z.object({
+    isPublished: z
+      .boolean({
+        invalid_type_error: "Is Published must be a boolean",
+      })
+      .optional(),
+  }),
+});
+
 export const PostValidations = {
   createPostValidationSchema,
   updatePostValidationSchema,
+  togglePostPublishValidationSchema,
 };

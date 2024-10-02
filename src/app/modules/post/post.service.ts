@@ -110,10 +110,32 @@ const deletePost = async (id: string) => {
   return result;
 };
 
+const togglePostPublish = async (id: string, payload: Partial<TPost>) => {
+  const existingPost = await getExistingPostById(id);
+
+  if (!existingPost) {
+    throw new AppError(httpStatus.NOT_FOUND, "Post not found");
+  }
+
+  const isPublished = payload.isPublished;
+
+  const newPublishStatus =
+    isPublished !== undefined ? isPublished : !existingPost.isPublished;
+
+  const result = await Post.findByIdAndUpdate(
+    id,
+    { isPublished: newPublishStatus },
+    { new: true }
+  );
+
+  return result;
+};
+
 export const PostService = {
   getPostById,
   getAllPosts,
   createPost,
   updatePost,
   deletePost,
+  togglePostPublish,
 };
