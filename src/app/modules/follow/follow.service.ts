@@ -3,6 +3,23 @@ import AppError from "../../errors/AppError";
 import { getExistingUserById } from "../user/user.utils";
 import { Follow } from "./follow.model";
 import { TFollow } from "./follow.interface";
+import QueryBuilder from "../../builder/QueryBuilder";
+
+const getAllFollows = async (query: Record<string, unknown>) => {
+  const userQuery = new QueryBuilder(Follow.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await userQuery.modelQuery;
+  const meta = await userQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
 
 const follow = async (followerId: string, toBeFollowedUserId: string) => {
   const follower = await getExistingUserById(followerId);
@@ -81,6 +98,7 @@ const unfollow = async (followerId: string, toBeUnfollowedUserId: string) => {
 };
 
 export const FollowService = {
+  getAllFollows,
   follow,
   unfollow,
 };

@@ -5,6 +5,12 @@ import { FollowController } from "./follow.controller";
 
 const router = Router();
 
+router.get(
+  "/",
+  auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),
+  FollowController.getAllFollows
+);
+
 router.post(
   "/:toBeFollowedUserId",
   auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),

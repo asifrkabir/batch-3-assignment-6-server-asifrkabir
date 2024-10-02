@@ -3,6 +3,28 @@ import catchAsync from "../../utils/catchAsync";
 import sendResponse from "../../utils/sendResponse";
 import { FollowService } from "./follow.service";
 
+const getAllFollows = catchAsync(async (req, res) => {
+  const result = await FollowService.getAllFollows(req.query);
+
+  if (result?.result?.length <= 0) {
+    sendResponse(res, {
+      success: false,
+      statusCode: httpStatus.OK,
+      message: "No Data Found",
+      meta: result.meta,
+      data: result?.result,
+    });
+  } else {
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Follows retrieved successfully",
+      meta: result.meta,
+      data: result.result,
+    });
+  }
+});
+
 const follow = catchAsync(async (req, res) => {
   const { userId } = req.user;
   const { toBeFollowedUserId } = req.params;
@@ -32,6 +54,7 @@ const unfollow = catchAsync(async (req, res) => {
 });
 
 export const FollowController = {
+  getAllFollows,
   follow,
   unfollow,
 };
