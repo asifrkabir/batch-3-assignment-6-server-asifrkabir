@@ -11,11 +11,11 @@ const moduleRoutes = [
     route: AuthRoutes,
   },
   {
-    path: "/user",
+    path: "/users",
     route: UserRoutes,
   },
   {
-    path: "/post",
+    path: "/posts",
     route: PostRoutes,
   },
 ];
