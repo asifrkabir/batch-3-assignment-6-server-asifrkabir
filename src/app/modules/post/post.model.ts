@@ -42,6 +42,10 @@ const postSchema = new Schema<TPost>(
       type: [String],
       default: [],
     },
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
   {
     timestamps: true,

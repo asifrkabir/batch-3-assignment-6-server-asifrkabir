@@ -11,4 +11,5 @@ export type TPost = {
   tags?: string[];
   imageUrls?: string[];
   //   comments?: Types.ObjectId[];
+  isActive: boolean;
 };
