@@ -5,6 +5,31 @@ import { TPost } from "./post.interface";
 import { Post } from "./post.model";
 import { getExistingPostById } from "./post.utils";
 import { getExistingUserById } from "../user/user.utils";
+import QueryBuilder from "../../builder/QueryBuilder";
+import { postSearchableFields } from "./post.constant";
+
+const getPostById = async (id: string) => {
+  const result = await Post.findOne({ _id: id, isActive: true });
+
+  return result;
+};
+
+const getAllPosts = async (query: Record<string, unknown>) => {
+  const userQuery = new QueryBuilder(Post.find({ isActive: true }), query)
+    .search(postSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await userQuery.modelQuery;
+  const meta = await userQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
 
 const createPost = async (payload: TPost, images: TImageFiles) => {
   const { postImages } = images;
@@ -70,6 +95,8 @@ const updatePost = async (
 };
 
 export const PostService = {
+  getPostById,
+  getAllPosts,
   createPost,
   updatePost,
 };

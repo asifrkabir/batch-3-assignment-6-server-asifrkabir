@@ -42,6 +42,10 @@ const postSchema = new Schema<TPost>(
       type: [String],
       default: [],
     },
+    isPublished: {
+      type: Boolean,
+      default: true,
+    },
     isActive: {
       type: Boolean,
       default: true,
