@@ -49,7 +49,7 @@ router.delete(
   PostController.deletePost
 );
 
-router.patch(
+router.put(
   "/:id/publish",
   auth(USER_ROLE_ENUM.admin),
   validateRequest(PostValidations.togglePostPublishValidationSchema),
