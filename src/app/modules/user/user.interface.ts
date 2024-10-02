@@ -1,4 +1,3 @@
-import { Types } from "mongoose";
 import { USER_ROLE_ENUM } from "./user.constant";
 
 export type TUser = {
@@ -8,8 +7,6 @@ export type TUser = {
   role: "admin" | "user";
   profilePicture: string;
   bio: string;
-  followers: [Types.ObjectId];
-  following: [Types.ObjectId];
   isActive: boolean;
 };
 

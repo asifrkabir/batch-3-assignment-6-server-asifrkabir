@@ -29,18 +29,6 @@ const userSchema = new Schema<TUser>(
     bio: {
       type: String,
     },
-    followers: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    following: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
     isActive: {
       type: Boolean,
       default: true,
