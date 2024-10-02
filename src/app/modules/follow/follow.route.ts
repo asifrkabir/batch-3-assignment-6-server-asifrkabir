@@ -11,4 +11,10 @@ router.post(
   FollowController.follow
 );
 
+router.delete(
+  "/:toBeUnfollowedUserId",
+  auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),
+  FollowController.unfollow
+);
+
 export const FollowRoutes = router;

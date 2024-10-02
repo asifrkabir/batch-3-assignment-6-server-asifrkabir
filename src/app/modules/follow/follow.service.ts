@@ -43,6 +43,44 @@ const follow = async (followerId: string, toBeFollowedUserId: string) => {
   return result;
 };
 
+const unfollow = async (followerId: string, toBeUnfollowedUserId: string) => {
+  const follower = await getExistingUserById(followerId);
+
+  if (!follower) {
+    throw new AppError(httpStatus.NOT_FOUND, "Follower not found");
+  }
+
+  const toBeUnfollowed = await getExistingUserById(toBeUnfollowedUserId);
+
+  if (!toBeUnfollowed) {
+    throw new AppError(httpStatus.NOT_FOUND, "User to be unfollowed not found");
+  }
+
+  if (follower._id.equals(toBeUnfollowed._id)) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "User cannot unfollow themselves"
+    );
+  }
+
+  const existingFollow = await Follow.findOne({
+    follower: follower,
+    following: toBeUnfollowed,
+  });
+
+  if (!existingFollow) {
+    throw new AppError(
+      httpStatus.BAD_REQUEST,
+      "You are not currently following this user"
+    );
+  }
+
+  const result = await Follow.findByIdAndDelete(existingFollow._id);
+
+  return result;
+};
+
 export const FollowService = {
   follow,
+  unfollow,
 };
