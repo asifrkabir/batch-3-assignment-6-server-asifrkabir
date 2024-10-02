@@ -43,4 +43,10 @@ router.put(
   PostController.updatePost
 );
 
+router.delete(
+  "/:id",
+  auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),
+  PostController.deletePost
+);
+
 export const PostRoutes = router;

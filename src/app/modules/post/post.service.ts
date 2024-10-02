@@ -94,9 +94,26 @@ const updatePost = async (
   return result;
 };
 
+const deletePost = async (id: string) => {
+  const existingPost = await getExistingPostById(id);
+
+  if (!existingPost) {
+    throw new AppError(httpStatus.NOT_FOUND, "Post not found");
+  }
+
+  const result = await Post.findByIdAndUpdate(
+    id,
+    { isActive: false },
+    { new: true }
+  );
+
+  return result;
+};
+
 export const PostService = {
   getPostById,
   getAllPosts,
   createPost,
   updatePost,
+  deletePost,
 };
