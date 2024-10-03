@@ -5,6 +5,7 @@ import { PostRoutes } from "../modules/post/post.route";
 import { FollowRoutes } from "../modules/follow/follow.route";
 import { PaymentRoutes } from "../modules/payment/payment.route";
 import { VoteRoutes } from "../modules/vote/vote.route";
+import { CommentRoutes } from "../modules/comment/comment.route";
 
 const router = Router();
 
@@ -32,6 +33,10 @@ const moduleRoutes = [
   {
     path: "/votes",
     route: VoteRoutes,
+  },
+  {
+    path: "/comments",
+    route: CommentRoutes,
   },
 ];
 
