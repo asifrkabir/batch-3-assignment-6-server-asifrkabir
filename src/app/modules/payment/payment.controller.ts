@@ -19,6 +19,28 @@ const createPaymentIntent = catchAsync(async (req, res) => {
   });
 });
 
+const getAllPayments = catchAsync(async (req, res) => {
+  const result = await PaymentService.getAllPayments(req.query);
+
+  if (result?.result?.length <= 0) {
+    sendResponse(res, {
+      success: false,
+      statusCode: httpStatus.OK,
+      message: "No Data Found",
+      meta: result.meta,
+      data: result?.result,
+    });
+  } else {
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Payments retrieved successfully",
+      meta: result.meta,
+      data: result.result,
+    });
+  }
+});
+
 const createPayment = catchAsync(async (req, res) => {
   const { userId } = req.user;
 
@@ -34,5 +56,6 @@ const createPayment = catchAsync(async (req, res) => {
 
 export const PaymentController = {
   createPaymentIntent,
+  getAllPayments,
   createPayment,
 };

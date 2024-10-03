@@ -6,6 +6,7 @@ import AppError from "../../errors/AppError";
 import httpStatus from "http-status";
 import { getExistingPostById } from "../post/post.utils";
 import { Payment } from "./payment.model";
+import QueryBuilder from "../../builder/QueryBuilder";
 
 const stripe = new Stripe(config.stripe_secret_key!, {
   apiVersion: "2024-06-20",
@@ -18,6 +19,22 @@ const createPaymentIntent = async (amount: number) => {
     payment_method_types: ["card"],
   });
   return paymentIntent;
+};
+
+const getAllPayments = async (query: Record<string, unknown>) => {
+  const userQuery = new QueryBuilder(Payment.find(), query)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const result = await userQuery.modelQuery;
+  const meta = await userQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
 };
 
 const createPayment = async (userId: string, payload: TPayment) => {
@@ -42,5 +59,6 @@ const createPayment = async (userId: string, payload: TPayment) => {
 
 export const PaymentService = {
   createPaymentIntent,
+  getAllPayments,
   createPayment,
 };
