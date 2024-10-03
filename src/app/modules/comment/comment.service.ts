@@ -78,8 +78,21 @@ const updateComment = async (
   return result;
 };
 
+const deleteComment = async (id: string) => {
+  const existingComment = await getExistingCommentById(id);
+
+  if (!existingComment) {
+    throw new AppError(httpStatus.NOT_FOUND, "Comment not found");
+  }
+
+  const result = await Comment.findByIdAndDelete(id);
+
+  return result;
+};
+
 export const CommentService = {
   createComment,
   getAllComments,
   updateComment,
+  deleteComment,
 };
