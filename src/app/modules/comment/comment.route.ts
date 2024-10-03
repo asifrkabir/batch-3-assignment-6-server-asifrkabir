@@ -7,6 +7,12 @@ import { CommentValidations } from "./comment.validation";
 
 const router = Router();
 
+router.get(
+  "/",
+  auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),
+  CommentController.getAllComments
+);
+
 router.post(
   "/",
   auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),
