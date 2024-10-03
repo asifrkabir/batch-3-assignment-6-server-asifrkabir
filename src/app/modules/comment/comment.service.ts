@@ -6,6 +6,7 @@ import { getExistingPostById } from "../post/post.utils";
 import { Comment } from "./comment.model";
 import QueryBuilder from "../../builder/QueryBuilder";
 import { commentSearchableFields } from "./comment.constant";
+import { getExistingCommentById } from "./comment.utils";
 
 const getAllComments = async (query: Record<string, unknown>) => {
   const commentQuery = new QueryBuilder(Comment.find(), query)
@@ -46,7 +47,39 @@ const createComment = async (userId: string, payload: TComment) => {
   return result;
 };
 
+const updateComment = async (
+  id: string,
+  userId: string,
+  payload: Partial<TComment>
+) => {
+  const existingUser = await getExistingUserById(userId);
+
+  if (!existingUser) {
+    throw new AppError(httpStatus.NOT_FOUND, "User not found");
+  }
+
+  const existingComment = await getExistingCommentById(id);
+
+  if (!existingComment) {
+    throw new AppError(httpStatus.NOT_FOUND, "Comment not found");
+  }
+
+  if (!existingComment.user.equals(existingUser._id)) {
+    throw new AppError(
+      httpStatus.FORBIDDEN,
+      "You are not allowed to edit this comment"
+    );
+  }
+
+  const result = await Comment.findOneAndUpdate({ _id: id }, payload, {
+    new: true,
+  });
+
+  return result;
+};
+
 export const CommentService = {
   createComment,
   getAllComments,
+  updateComment,
 };

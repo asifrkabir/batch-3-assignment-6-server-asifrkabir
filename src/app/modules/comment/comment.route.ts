@@ -20,4 +20,11 @@ router.post(
   CommentController.createComment
 );
 
+router.put(
+  "/:id",
+  auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),
+  validateRequest(CommentValidations.updateCommentValidationSchema),
+  CommentController.updateComment
+);
+
 export const CommentRoutes = router;
