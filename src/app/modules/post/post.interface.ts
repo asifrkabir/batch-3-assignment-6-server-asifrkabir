@@ -10,7 +10,6 @@ export type TPost = {
   downvotes: number;
   tags?: string[];
   imageUrls?: string[];
-  //   comments?: Types.ObjectId[];
   isPublished: boolean;
   isActive: boolean;
 };
