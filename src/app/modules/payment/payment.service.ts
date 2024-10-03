@@ -22,14 +22,14 @@ const createPaymentIntent = async (amount: number) => {
 };
 
 const getAllPayments = async (query: Record<string, unknown>) => {
-  const userQuery = new QueryBuilder(Payment.find(), query)
+  const paymentQuery = new QueryBuilder(Payment.find(), query)
     .filter()
     .sort()
     .paginate()
     .fields();
 
-  const result = await userQuery.modelQuery;
-  const meta = await userQuery.countTotal();
+  const result = await paymentQuery.modelQuery;
+  const meta = await paymentQuery.countTotal();
 
   return {
     meta,

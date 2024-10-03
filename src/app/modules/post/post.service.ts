@@ -7,6 +7,7 @@ import { getExistingPostById } from "./post.utils";
 import { getExistingUserById } from "../user/user.utils";
 import QueryBuilder from "../../builder/QueryBuilder";
 import { postSearchableFields } from "./post.constant";
+import { Payment } from "../payment/payment.model";
 
 const getPostById = async (id: string) => {
   const result = await Post.findOne({ _id: id, isActive: true });
@@ -15,15 +16,15 @@ const getPostById = async (id: string) => {
 };
 
 const getAllPosts = async (query: Record<string, unknown>) => {
-  const userQuery = new QueryBuilder(Post.find({ isActive: true }), query)
+  const postQuery = new QueryBuilder(Post.find({ isActive: true }), query)
     .search(postSearchableFields)
     .filter()
     .sort()
     .paginate()
     .fields();
 
-  const result = await userQuery.modelQuery;
-  const meta = await userQuery.countTotal();
+  const result = await postQuery.modelQuery;
+  const meta = await postQuery.countTotal();
 
   return {
     meta,
@@ -143,6 +144,46 @@ const togglePostPublish = async (id: string, payload: Partial<TPost>) => {
   return result;
 };
 
+const getAllPostsForNewsfeed = async (
+  userId: string,
+  query: Record<string, unknown>
+) => {
+  const postQuery = new QueryBuilder(
+    Post.find({ isActive: true, isPublished: true }),
+    query
+  )
+    .search(postSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const posts = await postQuery.modelQuery;
+
+  const purchasedPosts = await Payment.find({
+    user: userId,
+    status: "successful",
+  }).select("post");
+
+  const purchasedPostIds = new Set(
+    purchasedPosts.map((payment) => payment.post.toString())
+  );
+
+  const result = posts.map((post) => ({
+    ...post.toObject(),
+    isPurchased: post.isPremium
+      ? purchasedPostIds.has(post._id.toString())
+      : true, // Non-premium posts are always 'purchased'
+  }));
+
+  const meta = await postQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
+
 export const PostService = {
   getPostById,
   getAllPosts,
@@ -150,4 +191,5 @@ export const PostService = {
   updatePost,
   deletePost,
   togglePostPublish,
+  getAllPostsForNewsfeed,
 };
