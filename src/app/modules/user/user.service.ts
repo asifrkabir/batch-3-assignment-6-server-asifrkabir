@@ -62,7 +62,9 @@ const createUser = async (payload: TUser, images: TImageFiles) => {
 
   const jwtPayload = {
     userId: result._id.toString(),
+    name: result.name,
     email: result.email,
+    profilePicture: result?.profilePicture,
     role: result.role,
   };
 
