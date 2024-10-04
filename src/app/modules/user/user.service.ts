@@ -8,6 +8,8 @@ import { TImageFiles } from "../../interface/image.interface";
 import QueryBuilder from "../../builder/QueryBuilder";
 import mongoose from "mongoose";
 import { FollowService } from "../follow/follow.service";
+import { createToken } from "../auth/auth.utils";
+import config from "../../config";
 
 const getUserById = async (id: string) => {
   const result = await User.findOne({ _id: id, isActive: true }).select(
@@ -18,7 +20,10 @@ const getUserById = async (id: string) => {
 };
 
 const getAllUsers = async (query: Record<string, unknown>) => {
-  const userQuery = new QueryBuilder(User.find({ isActive: true }), query)
+  const userQuery = new QueryBuilder(
+    User.find({ isActive: true }).select("-password"),
+    query
+  )
     .search(userSearchableFields)
     .filter()
     .sort()
@@ -55,9 +60,27 @@ const createUser = async (payload: TUser, images: TImageFiles) => {
 
   const result = await User.create(payload);
 
+  const jwtPayload = {
+    userId: result._id.toString(),
+    email: result.email,
+    role: result.role,
+  };
+
+  const accessToken = createToken(
+    jwtPayload,
+    config.jwt_access_secret as string,
+    config.jwt_access_expires_in as string
+  );
+
+  const refreshToken = createToken(
+    jwtPayload,
+    config.jwt_refresh_secret as string,
+    config.jwt_refresh_expires_in as string
+  );
+
   (result as Partial<TUser>).password = undefined;
 
-  return result;
+  return { accessToken, refreshToken, user: result };
 };
 
 const updateUser = async (

@@ -1,18 +1,17 @@
 /* eslint-disable  no-unsafe-optional-chaining */
 import httpStatus from "http-status";
-import AppError from "../../errors/AppError";
-import { TLoginUser } from "./auth.interface";
-import { createToken, isPasswordValid, verifyToken } from "./auth.utils";
-import { TUser } from "../user/user.interface";
+import { JwtPayload } from "jsonwebtoken";
 import config from "../../config";
+import AppError from "../../errors/AppError";
+import { sendResetPasswordEmail } from "../../utils/sendEmail";
+import { User } from "../user/user.model";
 import {
   encryptPassword,
   getExistingUserByEmail,
   getExistingUserById,
 } from "../user/user.utils";
-import { User } from "../user/user.model";
-import { JwtPayload } from "jsonwebtoken";
-import { sendResetPasswordEmail } from "../../utils/sendEmail";
+import { TLoginUser } from "./auth.interface";
+import { createToken, isPasswordValid, verifyToken } from "./auth.utils";
 
 const loginUser = async (payload: TLoginUser) => {
   const { email, password } = payload;
@@ -45,9 +44,7 @@ const loginUser = async (payload: TLoginUser) => {
     config.jwt_refresh_expires_in as string
   );
 
-  (existingUser as Partial<TUser>).password = undefined;
-
-  return { accessToken, refreshToken, existingUser };
+  return { accessToken, refreshToken };
 };
 
 const changePassword = async (
