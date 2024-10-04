@@ -9,9 +9,18 @@ import config from "./app/config";
 
 const app: Application = express();
 
+// app.use(
+//   cors({
+//     origin: [config.client_url as string],
+//     credentials: true,
+//   })
+// );
 app.use(
   cors({
-    origin: [config.client_url as string],
+    origin: [
+      "http://localhost:3000",
+      "https://batch-3-assignment-6-client-asifrkabir.vercel.app",
+    ],
     credentials: true,
   })
 );
