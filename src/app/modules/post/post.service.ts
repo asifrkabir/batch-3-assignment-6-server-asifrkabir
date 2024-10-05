@@ -8,6 +8,7 @@ import { getExistingUserById } from "../user/user.utils";
 import QueryBuilder from "../../builder/QueryBuilder";
 import { postSearchableFields } from "./post.constant";
 import { Payment } from "../payment/payment.model";
+import { Vote } from "../vote/vote.model";
 
 const getPostById = async (id: string) => {
   const result = await Post.findOne({ _id: id, isActive: true });
@@ -149,7 +150,7 @@ const getAllPostsForNewsfeed = async (
   query: Record<string, unknown>
 ) => {
   const postQuery = new QueryBuilder(
-    Post.find({ isActive: true, isPublished: true }),
+    Post.find({ isActive: true, isPublished: true }).populate("author"),
     query
   )
     .search(postSearchableFields)
@@ -169,11 +170,19 @@ const getAllPostsForNewsfeed = async (
     purchasedPosts.map((payment) => payment.post.toString())
   );
 
+  const userVotes = await Vote.find({ user: userId }).select("post voteType");
+
+  const userVoteMap = userVotes.reduce<Record<string, string>>((acc, vote) => {
+    acc[vote.post.toString()] = vote.voteType;
+    return acc;
+  }, {});
+
   const result = posts.map((post) => ({
     ...post.toObject(),
     isPurchased: post.isPremium
       ? purchasedPostIds.has(post._id.toString())
       : true, // Non-premium posts are always 'purchased'
+    voteType: userVoteMap[post._id.toString()] || "none",
   }));
 
   const meta = await postQuery.countTotal();
