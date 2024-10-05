@@ -193,6 +193,40 @@ const getAllPostsForNewsfeed = async (
   };
 };
 
+const getPostByIdForUser = async (postId: string, userId: string) => {
+  const post = await Post.findOne({
+    _id: postId,
+    isActive: true,
+    isPublished: true,
+  })
+    .populate("author")
+    .lean();
+
+  if (!post) {
+    throw new AppError(httpStatus.NOT_FOUND, "Post not found");
+  }
+
+  const purchasedPost = await Payment.findOne({
+    user: userId,
+    post: postId,
+    status: "successful",
+  }).select("post");
+
+  const isPurchased = post.isPremium ? !!purchasedPost : true;
+
+  const userVote = await Vote.findOne({ user: userId, post: postId }).select(
+    "voteType"
+  );
+
+  const voteType = userVote ? userVote.voteType : "none";
+
+  return {
+    ...post,
+    isPurchased,
+    voteType,
+  };
+};
+
 export const PostService = {
   getPostById,
   getAllPosts,
@@ -201,4 +235,5 @@ export const PostService = {
   deletePost,
   togglePostPublish,
   getAllPostsForNewsfeed,
+  getPostByIdForUser,
 };

@@ -134,6 +134,20 @@ const getAllPostsForNewsfeed = catchAsync(async (req, res) => {
   }
 });
 
+const getPostByIdForUser = catchAsync(async (req, res) => {
+  const { id } = req.params;
+  const { userId } = req.user;
+
+  const result = await PostService.getPostByIdForUser(id, userId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Post retrieved successfully",
+    data: result,
+  });
+});
+
 export const PostController = {
   getPostById,
   getAllPosts,
@@ -142,4 +156,5 @@ export const PostController = {
   deletePost,
   togglePostPublish,
   getAllPostsForNewsfeed,
+  getPostByIdForUser,
 };
