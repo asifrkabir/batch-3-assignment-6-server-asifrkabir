@@ -9,7 +9,7 @@ import { commentSearchableFields } from "./comment.constant";
 import { getExistingCommentById } from "./comment.utils";
 
 const getAllComments = async (query: Record<string, unknown>) => {
-  const commentQuery = new QueryBuilder(Comment.find(), query)
+  const commentQuery = new QueryBuilder(Comment.find().populate("user"), query)
     .search(commentSearchableFields)
     .filter()
     .sort()
