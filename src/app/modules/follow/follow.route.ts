@@ -23,4 +23,10 @@ router.delete(
   FollowController.unfollow
 );
 
+router.get(
+  "/check/:id",
+  auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),
+  FollowController.checkIfUserFollowsAnotherUser
+);
+
 export const FollowRoutes = router;

@@ -112,9 +112,38 @@ const deleteAllFollowsByUserId = async (
   return result.deletedCount;
 };
 
+const checkIfUserFollowsAnotherUser = async (
+  followerId: string,
+  toBeFollowedId: string
+) => {
+  const follower = await getExistingUserById(followerId);
+
+  if (!follower) {
+    throw new AppError(httpStatus.NOT_FOUND, "Follower not found");
+  }
+
+  const toBeFollowed = await getExistingUserById(toBeFollowedId);
+
+  if (!toBeFollowed) {
+    throw new AppError(httpStatus.NOT_FOUND, "User to be followed not found");
+  }
+
+  const result = await Follow.findOne({
+    follower: follower,
+    following: toBeFollowed,
+  });
+
+  if (result) {
+    return true;
+  } else {
+    return false;
+  }
+};
+
 export const FollowService = {
   getAllFollows,
   follow,
   unfollow,
   deleteAllFollowsByUserId,
+  checkIfUserFollowsAnotherUser,
 };

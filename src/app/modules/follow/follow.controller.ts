@@ -53,8 +53,26 @@ const unfollow = catchAsync(async (req, res) => {
   });
 });
 
+const checkIfUserFollowsAnotherUser = catchAsync(async (req, res) => {
+  const { id: toBeFollowed } = req.params;
+  const { userId: followerId } = req.user;
+
+  const result = await FollowService.checkIfUserFollowsAnotherUser(
+    followerId,
+    toBeFollowed
+  );
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: "Follow status retrieved successfully",
+    data: result,
+  });
+});
+
 export const FollowController = {
   getAllFollows,
   follow,
   unfollow,
+  checkIfUserFollowsAnotherUser,
 };
