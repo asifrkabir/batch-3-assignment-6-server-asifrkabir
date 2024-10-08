@@ -7,7 +7,10 @@ import QueryBuilder from "../../builder/QueryBuilder";
 import { ClientSession } from "mongoose";
 
 const getAllFollows = async (query: Record<string, unknown>) => {
-  const followQuery = new QueryBuilder(Follow.find(), query)
+  const followQuery = new QueryBuilder(
+    Follow.find().populate("follower following"),
+    query
+  )
     .filter()
     .sort()
     .paginate()

@@ -22,7 +22,10 @@ const createPaymentIntent = async (amount: number) => {
 };
 
 const getAllPayments = async (query: Record<string, unknown>) => {
-  const paymentQuery = new QueryBuilder(Payment.find(), query)
+  const paymentQuery = new QueryBuilder(
+    Payment.find().populate("user post"),
+    query
+  )
     .filter()
     .sort()
     .paginate()

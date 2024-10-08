@@ -18,7 +18,10 @@ const getPostById = async (id: string) => {
 };
 
 const getAllPosts = async (query: Record<string, unknown>) => {
-  const postQuery = new QueryBuilder(Post.find({ isActive: true }), query)
+  const postQuery = new QueryBuilder(
+    Post.find({ isActive: true }).populate("author"),
+    query
+  )
     .search(postSearchableFields)
     .filter()
     .sort()
@@ -239,8 +242,7 @@ const getAllPostsForFollowingNewsfeed = async (
   userId: string,
   query: Record<string, unknown>
 ) => {
-  const following = await Follow.find({ follower: userId })
-    .select("following");
+  const following = await Follow.find({ follower: userId }).select("following");
 
   const followingIds = following.map((follow) => follow.following.toString());
 
