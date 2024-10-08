@@ -148,6 +148,33 @@ const getPostByIdForUser = catchAsync(async (req, res) => {
   });
 });
 
+const getAllPostsForFollowingNewsfeed = catchAsync(async (req, res) => {
+  const { userId } = req.user;
+
+  const result = await PostService.getAllPostsForFollowingNewsfeed(
+    userId,
+    req.query
+  );
+
+  if (result?.result?.length <= 0) {
+    sendResponse(res, {
+      success: false,
+      statusCode: httpStatus.OK,
+      message: "No Data Found",
+      meta: result.meta,
+      data: result?.result,
+    });
+  } else {
+    sendResponse(res, {
+      success: true,
+      statusCode: httpStatus.OK,
+      message: "Following Newsfeed Posts retrieved successfully",
+      meta: result.meta,
+      data: result.result,
+    });
+  }
+});
+
 export const PostController = {
   getPostById,
   getAllPosts,
@@ -157,4 +184,5 @@ export const PostController = {
   togglePostPublish,
   getAllPostsForNewsfeed,
   getPostByIdForUser,
+  getAllPostsForFollowingNewsfeed,
 };

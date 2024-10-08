@@ -12,6 +12,12 @@ import auth from "../../middlewares/auth";
 const router = Router();
 
 router.get(
+  "/newsfeed/following",
+  auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),
+  PostController.getAllPostsForFollowingNewsfeed
+);
+
+router.get(
   "/newsfeed/:id",
   auth(USER_ROLE_ENUM.admin, USER_ROLE_ENUM.user),
   PostController.getPostByIdForUser

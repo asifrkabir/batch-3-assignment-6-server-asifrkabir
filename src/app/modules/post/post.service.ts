@@ -9,6 +9,7 @@ import QueryBuilder from "../../builder/QueryBuilder";
 import { postSearchableFields } from "./post.constant";
 import { Payment } from "../payment/payment.model";
 import { Vote } from "../vote/vote.model";
+import { Follow } from "../follow/follow.model";
 
 const getPostById = async (id: string) => {
   const result = await Post.findOne({ _id: id, isActive: true });
@@ -234,6 +235,68 @@ const getPostByIdForUser = async (postId: string, userId: string) => {
   };
 };
 
+const getAllPostsForFollowingNewsfeed = async (
+  userId: string,
+  query: Record<string, unknown>
+) => {
+  const following = await Follow.find({ follower: userId })
+    .select("following");
+
+  const followingIds = following.map((follow) => follow.following.toString());
+
+  const postQuery = new QueryBuilder(
+    Post.find({
+      isActive: true,
+      isPublished: true,
+      author: { $in: followingIds },
+    }).populate("author"),
+    query
+  )
+    .search(postSearchableFields)
+    .filter()
+    .sort()
+    .paginate()
+    .fields();
+
+  const posts = await postQuery.modelQuery;
+
+  const purchasedPosts = await Payment.find({
+    user: userId,
+    status: "successful",
+  }).select("post");
+
+  const purchasedPostIds = new Set(
+    purchasedPosts.map((payment) => payment.post.toString())
+  );
+
+  const userVotes = await Vote.find({ user: userId }).select("post voteType");
+
+  const userVoteMap = userVotes.reduce<Record<string, string>>((acc, vote) => {
+    acc[vote.post.toString()] = vote.voteType;
+    return acc;
+  }, {});
+
+  const result = posts.map((post) => {
+    const postId = post._id.toString();
+    const isAuthor = userId === post.author._id.toString();
+
+    return {
+      ...post.toObject(),
+      isPurchased: post.isPremium
+        ? isAuthor || purchasedPostIds.has(postId)
+        : true, // Non-premium posts are always 'purchased'
+      voteType: userVoteMap[postId] || "none",
+    };
+  });
+
+  const meta = await postQuery.countTotal();
+
+  return {
+    meta,
+    result,
+  };
+};
+
 export const PostService = {
   getPostById,
   getAllPosts,
@@ -243,4 +306,5 @@ export const PostService = {
   togglePostPublish,
   getAllPostsForNewsfeed,
   getPostByIdForUser,
+  getAllPostsForFollowingNewsfeed,
 };
