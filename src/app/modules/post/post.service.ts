@@ -177,13 +177,18 @@ const getAllPostsForNewsfeed = async (
     return acc;
   }, {});
 
-  const result = posts.map((post) => ({
-    ...post.toObject(),
-    isPurchased: post.isPremium
-      ? purchasedPostIds.has(post._id.toString())
-      : true, // Non-premium posts are always 'purchased'
-    voteType: userVoteMap[post._id.toString()] || "none",
-  }));
+  const result = posts.map((post) => {
+    const postId = post._id.toString();
+    const isAuthor = userId === post.author._id.toString();
+
+    return {
+      ...post.toObject(),
+      isPurchased: post.isPremium
+        ? isAuthor || purchasedPostIds.has(postId)
+        : true, // Non-premium posts are always 'purchased'
+      voteType: userVoteMap[postId] || "none",
+    };
+  });
 
   const meta = await postQuery.countTotal();
 
@@ -212,7 +217,9 @@ const getPostByIdForUser = async (postId: string, userId: string) => {
     status: "successful",
   }).select("post");
 
-  const isPurchased = post.isPremium ? !!purchasedPost : true;
+  const isAuthor = userId === post.author._id.toString();
+
+  const isPurchased = post.isPremium ? isAuthor || !!purchasedPost : true;
 
   const userVote = await Vote.findOne({ user: userId, post: postId }).select(
     "voteType"
